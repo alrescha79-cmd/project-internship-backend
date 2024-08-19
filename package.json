@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase": "^10.13.0",
+    "firebase-admin": "^12.3.1",
+    "multer": "^1.4.5-lts.1"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "api for internship project",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "author": "Anggun Caksono",
+  "license": "ISC"
+}
