@@ -1,6 +1,6 @@
 const axios = require('axios');
 require('dotenv').config();
-const { admin, db } = require('../Firebase');
+const { admin, db } = require('../config/Firebase');
 
 exports.login = async (req, res) => {
     try {

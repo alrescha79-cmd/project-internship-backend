@@ -9,9 +9,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/news', newsRoutes);
-
 app.use('/auth', authRoutes);
-
 app.use('/journalist', journalistRoutes);
 
 

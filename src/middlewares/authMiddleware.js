@@ -1,4 +1,4 @@
-const { admin } = require('../Firebase');
+const { admin } = require('../config/Firebase');
 
 const authMiddleware = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];

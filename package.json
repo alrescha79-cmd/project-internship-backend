@@ -14,8 +14,8 @@
   "description": "api for internship project",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
   },
   "author": "Anggun Caksono",
   "license": "ISC"

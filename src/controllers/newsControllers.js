@@ -1,4 +1,4 @@
-const { admin, db } = require('../Firebase');
+const { admin, db } = require('../config/Firebase');
 
 
 exports.getAllNews = async (req, res) => {

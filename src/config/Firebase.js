@@ -3,7 +3,7 @@ require('dotenv').config();
 const admin = require('firebase-admin');
 
 // Load the Firebase service account key
-const serviceAccount = require('./adminsdk.json');
+const serviceAccount = require('../../adminsdk.json');
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
