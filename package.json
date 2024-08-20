@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "axios": "^1.7.4",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -11,7 +13,6 @@
   "version": "1.0.0",
   "description": "api for internship project",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js"
