@@ -1,78 +1,97 @@
-const db = require('../Firebase')
+const { admin, db } = require('../Firebase');
 
 
 exports.getAllNews = async (req, res) => {
     try {
-        const newsRef = db.db.collection('news');
+        const newsRef = db.collection('news');
         const snapshot = await newsRef.get();
-        const news = [];
 
-        snapshot.forEach((doc) => {
-            news.push({
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'No news found' });
+        }
+
+        const newsList = [];
+        snapshot.forEach(doc => {
+            newsList.push({
                 id: doc.id,
                 ...doc.data()
             });
         });
 
         res.status(200).json({
-            message: 'Get all news',
-            data: news
+            message: 'News retrieved successfully',
+            data: newsList
         });
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-}
-
-exports.getNewsById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const newsRef = db.db.collection('news').doc(id);
-        const doc = await newsRef.get();
-
-        if (!doc.exists) {
-            res.status(404).json({ message: 'News not found' });
-        } else {
-            res.status(200).json({
-                message: 'Get news by id',
-                data: {
-                    id: doc.id,
-                    ...doc.data()
-                }
-            });
-        }
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
 
-exports.createNews = async (req, res) => {
+exports.getNewsById = async (req, res) => {
     try {
-        const { title, content } = req.body;
-        const newsRef = db.db.collection('news');
-        const doc = await newsRef.add({ title, content });
+        const newsId = req.params.id;
+        const newsRef = db.collection('news').doc(newsId);
+        const doc = await newsRef.get();
 
-        res.status(201).json({
-            message: 'News created successfully',
+        if (!doc.exists) {
+            return res.status(404).json({ message: 'News not found' });
+        }
+
+        res.status(200).json({
+            message: 'News retrieved successfully',
             data: {
                 id: doc.id,
-                title,
-                content
+                ...doc.data()
             }
         });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
+
+exports.createNews = async (req, res) => {
+    try {
+        const { title, content } = req.body;
+        const userId = req.user.uid;
+
+        const userDoc = await db.collection('journalist').doc(userId).get();
+        if (!userDoc.exists) {
+            return res.status(404).json({ message: 'journalist not found' });
+        }
+        const authorName = userDoc.data().name;
+
+        const newsRef = db.collection('news');
+        const doc = await newsRef.add({
+            title,
+            content,
+            author: authorName,
+            authorId: userId,
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        res.status(201).json({
+            message: 'News created successfully',
+            data: {
+                id: doc.id,
+                title,
+                content,
+                author: authorName,
+                authorId: userId
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 
 exports.updateNews = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, content } = req.body;
-        const newsRef = db.db.collection('news').doc(id);
+        const newsRef = db.collection('news').doc(id);
         const doc = await newsRef.get();
 
         if (!doc.exists) {
@@ -85,7 +104,8 @@ exports.updateNews = async (req, res) => {
                 data: {
                     id: doc.id,
                     title,
-                    content
+                    content,
+                    lastEdit: admin.firestore.FieldValue.serverTimestamp()
                 }
             });
         }
@@ -98,7 +118,7 @@ exports.updateNews = async (req, res) => {
 exports.deleteNews = async (req, res) => {
     try {
         const { id } = req.params;
-        const newsRef = db.db.collection('news').doc(id);
+        const newsRef = db.collection('news').doc(id);
         const doc = await newsRef.get();
 
         if (!doc.exists) {

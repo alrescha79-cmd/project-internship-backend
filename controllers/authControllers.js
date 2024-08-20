@@ -1,5 +1,6 @@
 const axios = require('axios');
 require('dotenv').config();
+const { admin, db } = require('../Firebase');
 
 exports.login = async (req, res) => {
     try {
@@ -45,3 +46,18 @@ exports.refreshToken = async (req, res) => {
         res.status(500).json({ message: 'Failed to refresh token' });
     }
 };
+
+exports.logout = async (req, res) => {
+    try {
+        const { idToken } = req.body;
+
+        await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signOut?key=${process.env.API_KEY}`, {
+            idToken
+        });
+
+        res.status(200).json({ message: 'Logout success' });
+    } catch (error) {
+        console.log(error.response ? error.response.data : error.message);
+        res.status(500).json({ message: 'Failed to logout' });
+    }
+}
